@@ -535,6 +535,7 @@ Modal.propTypes = {
   shouldFocusAfterRender: _propTypes2.default.bool,
   shouldCloseOnOverlayClick: _propTypes2.default.bool,
   shouldReturnFocusAfterClose: _propTypes2.default.bool,
+  preventScroll: _propTypes2.default.bool,
   parentSelector: _propTypes2.default.func,
   aria: _propTypes2.default.object,
   data: _propTypes2.default.object,
@@ -555,6 +556,7 @@ Modal.defaultProps = {
   shouldCloseOnEsc: true,
   shouldCloseOnOverlayClick: true,
   shouldReturnFocusAfterClose: true,
+  preventScroll: false,
   parentSelector: function parentSelector() {
     return document.body;
   }
@@ -1526,7 +1528,7 @@ var ModalPortal = function (_Component) {
 
       if (_this.props.shouldFocusAfterRender) {
         if (_this.props.shouldReturnFocusAfterClose) {
-          focusManager.returnFocus();
+          focusManager.returnFocus(_this.props.preventScroll);
           focusManager.teardownScopedFocus();
         } else {
           focusManager.popWithoutFocus();
@@ -1816,6 +1818,7 @@ ModalPortal.propTypes = {
   shouldFocusAfterRender: _propTypes2.default.bool,
   shouldCloseOnOverlayClick: _propTypes2.default.bool,
   shouldReturnFocusAfterClose: _propTypes2.default.bool,
+  preventScroll: _propTypes2.default.bool,
   role: _propTypes2.default.string,
   contentLabel: _propTypes2.default.string,
   aria: _propTypes2.default.object,
@@ -1888,11 +1891,13 @@ function markForFocusLater() {
 
 /* eslint-disable no-console */
 function returnFocus() {
+  var preventScroll = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
   var toFocus = null;
   try {
     if (focusLaterElements.length !== 0) {
       toFocus = focusLaterElements.pop();
-      toFocus.focus();
+      toFocus.focus({ preventScroll: preventScroll });
     }
     return;
   } catch (e) {
